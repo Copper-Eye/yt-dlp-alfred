@@ -2,7 +2,7 @@
   "bundleid": "com.coppereye.github.ytdlp",
   "iconpath": "../icon.png",
   "log": {
-    "level": "all",
+    "level": "error",
     "internal": true
   },
   "variablesconfig": {
