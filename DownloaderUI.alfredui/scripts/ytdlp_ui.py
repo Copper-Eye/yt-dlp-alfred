@@ -14,11 +14,15 @@ LOG_PATH = Path("/tmp/ytdlp_ui.log")
 PID_PATH = Path("/tmp/ytdlp_ui.pid")
 FETCHED_URL_PATH = Path("/tmp/ytdlp_ui.fetched_url")
 FETCH_PENDING_PATH = Path("/tmp/ytdlp_ui.fetch_pending")
-PCT_RE = re.compile(r"[download]\s+(\d+(?:\.\d+)?)%")
-DEST_RE = re.compile(r"[download]\s+Destination:")
+
+# Escape square brackets so [download] matches literally
+PCT_RE = re.compile(r"\[download\]\s+(\d+(?:\.\d+)?)%")
+DEST_RE = re.compile(r"\[download\]\s+Destination:")
+
 
 def find_bin(name: str) -> str:
     return shutil.which(name) or ""
+
 
 def get_download_dir(custom_dir: str = "") -> Path:
     chosen = (
@@ -30,13 +34,19 @@ def get_download_dir(custom_dir: str = "") -> Path:
     target.mkdir(parents=True, exist_ok=True)
     return target
 
+
+def unlink_quietly(path: Path) -> None:
+    try:
+        if path.exists():
+            path.unlink()
+    except OSError:
+        pass
+
+
 def cleanup_temp_files() -> None:
     for path in (LOG_PATH, PID_PATH, FETCHED_URL_PATH, FETCH_PENDING_PATH):
-        try:
-            if path.exists():
-                path.unlink()
-        except OSError:
-            pass
+        unlink_quietly(path)
+
 
 def is_pid_running(pid: int) -> bool:
     if pid <= 0:
@@ -47,6 +57,7 @@ def is_pid_running(pid: int) -> bool:
     except OSError:
         return False
 
+
 def read_pid() -> int:
     if not PID_PATH.exists():
         return 0
@@ -55,6 +66,7 @@ def read_pid() -> int:
     except ValueError:
         return 0
 
+
 def read_log_tail(max_lines: int = 30) -> str:
     if not LOG_PATH.exists():
         return "No active log."
@@ -62,6 +74,7 @@ def read_log_tail(max_lines: int = 30) -> str:
     if not lines:
         return "Log file is empty."
     return "\n".join(lines[-max_lines:])
+
 
 def compute_overall_progress(log_text: str, is_merging: bool, is_done: bool) -> tuple[float, str]:
     if is_done:
@@ -91,16 +104,18 @@ def compute_overall_progress(log_text: str, is_merging: bool, is_done: bool) -> 
 
     return round(current_pct, 1), "Downloading"
 
+
 def ui_response(
     updates: dict,
     notification_title: str = "",
     notification_text: str = "",
     pulse_interval: float | None = None,
     pulse_now: bool = False,
+    relayout: bool = False,
 ) -> dict:
     payload: dict = {
         "update": {
-            "relayout": True,
+            "relayout": relayout,
             "ids": updates,
         }
     }
@@ -129,19 +144,21 @@ def get_initial_url(extra_args: list[str] | None = None) -> str:
             return candidate
     return ""
 
+
 def poll_status(custom_dir: str = "", extra_args: list[str] | None = None) -> dict:
     out_dir = get_download_dir(custom_dir)
+    pid = read_pid()
+    running = is_pid_running(pid)
 
-    # Keep "Fetching formats..." visible while an async fetch is in flight
-    if FETCH_PENDING_PATH.exists():
+    # Only handle pending initial-URL fetch when no download is active/logged
+    if FETCH_PENDING_PATH.exists() and not running and not LOG_PATH.exists():
         pending_url = FETCH_PENDING_PATH.read_text(encoding="utf-8", errors="replace").strip()
         already_fetched = (
             FETCHED_URL_PATH.read_text(encoding="utf-8", errors="replace").strip()
             if FETCHED_URL_PATH.exists()
             else ""
         )
-        if pending_url and pending_url != already_fetched and not LOG_PATH.exists() and not PID_PATH.exists():
-            # Trigger the actual fetch on this tick so it starts promptly
+        if pending_url and pending_url != already_fetched:
             return fetch_formats(pending_url, str(out_dir))
 
         return ui_response(
@@ -160,7 +177,7 @@ def poll_status(custom_dir: str = "", extra_args: list[str] | None = None) -> di
         else ""
     )
 
-    if initial_url and initial_url != already_fetched and not LOG_PATH.exists() and not PID_PATH.exists():
+    if initial_url and initial_url != already_fetched and not LOG_PATH.exists() and not running:
         FETCH_PENDING_PATH.write_text(initial_url, encoding="utf-8")
         return ui_response(
             {
@@ -176,18 +193,20 @@ def poll_status(custom_dir: str = "", extra_args: list[str] | None = None) -> di
     log_tail = read_log_tail(30)
     full_log = LOG_PATH.read_text(encoding="utf-8", errors="replace") if LOG_PATH.exists() else ""
 
-    pid = read_pid()
-    running = is_pid_running(pid)
     has_error = "ERROR:" in full_log
-    is_merging = ("[Merger]" in full_log or "[ExtractAudio]" in full_log) and running
-    is_done = (not running) and (not has_error) and (
+    has_completion_marker = (
         "[Merger]" in full_log
+        or "Merging formats" in full_log
         or "[ExtractAudio]" in full_log
         or "has already been downloaded" in full_log
-        or "100%" in full_log
+        or "[download] 100%" in full_log
+        or "[download] 100.0%" in full_log
     )
+    is_merging = ("[Merger]" in full_log or "Merging formats" in full_log or "[ExtractAudio]" in full_log) and running
+    is_done = (not running) and (not has_error) and has_completion_marker
 
     pct, stage = compute_overall_progress(full_log, is_merging=is_merging, is_done=is_done)
+    progress_val = max(0.0, min(1.0, pct / 100.0))
 
     if running:
         status = f"Active • {stage} ({pct:.1f}%)"
@@ -197,6 +216,7 @@ def poll_status(custom_dir: str = "", extra_args: list[str] | None = None) -> di
         next_interval = 0.0
     elif is_done:
         pct = 100.0
+        progress_val = 1.0
         status = f"Completed • Saved to {out_dir}"
         next_interval = 0.0
     else:
@@ -205,32 +225,26 @@ def poll_status(custom_dir: str = "", extra_args: list[str] | None = None) -> di
 
     return ui_response(
         {
-            "download_progress": {"progress": pct / 100.0},
+            "download_progress": {"progress": progress_val},
             "percent_label": {"text": f"{pct:.1f}%"},
             "status_label": {"text": status},
             "log_area": {"text": log_tail},
         },
         pulse_interval=next_interval,
+        relayout=False,
     )
+
 
 def fetch_formats(url: str, custom_dir: str = "") -> dict:
     out_dir = get_download_dir(custom_dir)
     url = url.strip()
 
-    for path in (LOG_PATH, PID_PATH):
-        try:
-            if path.exists():
-                path.unlink()
-        except OSError:
-            pass
+    unlink_quietly(LOG_PATH)
+    unlink_quietly(PID_PATH)
 
     if not url:
-        for path in (FETCH_PENDING_PATH, FETCHED_URL_PATH):
-            try:
-                if path.exists():
-                    path.unlink()
-            except OSError:
-                pass
+        unlink_quietly(FETCH_PENDING_PATH)
+        unlink_quietly(FETCHED_URL_PATH)
         return ui_response(
             {
                 "status_label": {"text": f"Please paste a valid URL first • Output: {out_dir}"},
@@ -246,10 +260,7 @@ def fetch_formats(url: str, custom_dir: str = "") -> dict:
 
     ytdlp = find_bin("yt-dlp")
     if not ytdlp:
-        try:
-            FETCH_PENDING_PATH.unlink()
-        except OSError:
-            pass
+        unlink_quietly(FETCH_PENDING_PATH)
         return ui_response(
             {
                 "status_label": {"text": "yt-dlp not found. Install via Homebrew (brew install yt-dlp)."},
@@ -266,10 +277,7 @@ def fetch_formats(url: str, custom_dir: str = "") -> dict:
             timeout=60,
         )
     except Exception as exc:
-        try:
-            FETCH_PENDING_PATH.unlink()
-        except OSError:
-            pass
+        unlink_quietly(FETCH_PENDING_PATH)
         return ui_response(
             {
                 "status_label": {"text": f"Error running yt-dlp: {exc}"},
@@ -278,10 +286,7 @@ def fetch_formats(url: str, custom_dir: str = "") -> dict:
             pulse_interval=0.0,
         )
 
-    try:
-        FETCH_PENDING_PATH.unlink()
-    except OSError:
-        pass
+    unlink_quietly(FETCH_PENDING_PATH)
 
     if proc.returncode != 0:
         err_lines = [line.strip() for line in (proc.stderr or "").splitlines() if line.strip()]
@@ -369,9 +374,12 @@ def fetch_formats(url: str, custom_dir: str = "") -> dict:
             "log_area": {"text": "Formats loaded. Select a format and click Download Selected."},
         },
         pulse_interval=0.0,
+        relayout=True,
     )
 
+
 def start_download(url: str, selection: str, custom_dir: str = "") -> dict:
+    unlink_quietly(FETCH_PENDING_PATH)
     url = url.strip()
     selection = (selection or "preset:best_mp4").strip()
     if not url:
@@ -433,7 +441,9 @@ def start_download(url: str, selection: str, custom_dir: str = "") -> dict:
         pulse_now=True,
     )
 
+
 def cancel_download() -> dict:
+    unlink_quietly(FETCH_PENDING_PATH)
     pid = read_pid()
     stopped = False
     if pid > 0 and is_pid_running(pid):
@@ -447,11 +457,7 @@ def cancel_download() -> dict:
             except OSError:
                 pass
 
-    try:
-        if PID_PATH.exists():
-            PID_PATH.unlink()
-    except OSError:
-        pass
+    unlink_quietly(PID_PATH)
 
     msg = "\n[Alfred UI] Download cancelled by user."
     if LOG_PATH.exists():
@@ -467,6 +473,7 @@ def cancel_download() -> dict:
         },
         pulse_interval=0.0,
     )
+
 
 def open_downloads(custom_dir: str = "") -> dict:
     out_dir = get_download_dir(custom_dir)
