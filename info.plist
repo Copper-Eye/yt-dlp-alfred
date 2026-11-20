@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.coppereye.github.ytdlp</string>
+	<key>category</key>
+	<string>Internet</string>
+	<key>connections</key>
+	<dict>
+		<key>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>316C7968-D72C-4074-A705-BC7E18AA64C1</key>
+		<array/>
+		<key>49282CEF-0129-432E-BDFC-325AAB603F45</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>53F46860-6B89-4CC3-932A-5336A00BEE43</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B8F9DB98-1388-4E8D-85A0-99347B25DDF8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Dom Robson-Tull</string>
+	<key>description</key>
+	<string>An AlfredUI workflow for yt-dlp</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>yt-dlp</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>yt-dlp</string>
+				<key>subtext</key>
+				<string>Fetch from: {query}</string>
+				<key>text</key>
+				<string>yt-dlp</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>53F46860-6B89-4CC3-932A-5336A00BEE43</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>launchmode</key>
+				<integer>1</integer>
+				<key>path</key>
+				<string>DownloaderUI.alfredui</string>
+				<key>stackview</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.userinterface.alfredui</string>
+			<key>uid</key>
+			<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>initial_url</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsfiles</key>
+				<false/>
+				<key>acceptsmulti</key>
+				<integer>0</integer>
+				<key>acceptstext</key>
+				<false/>
+				<key>acceptsurls</key>
+				<true/>
+				<key>name</key>
+				<string>yt-dlp</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.universalaction</string>
+			<key>uid</key>
+			<string>49282CEF-0129-432E-BDFC-325AAB603F45</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
+				<key>hotstring</key>
+				<string></string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>B8F9DB98-1388-4E8D-85A0-99347B25DDF8</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>## Prerequisites
+
+**`yt-dlp` is required** to fetch formats and download media:
+
+```zsh
+brew install yt-dlp
+```
+
+Optional, for merging separate video/audio streams and converting audio formats (such as M4A/MP3):
+
+```zsh
+brew install ffmpeg
+```
+
+## Usage
+
+Inspect available video and audio streams and download media via the `ytp` keyword.
+
+![Searching for a media URL with the ytp keyword](images/keyword.png)
+
+* &lt;kbd&gt;↩&lt;/kbd&gt; Open the downloader window and automatically fetch formats if a URL is provided.
+
+Alternatively, fetch formats and download media from a selected URL via the Universal Action.
+
+![Triggering yt-dlp Media Downloader via the Universal Action](images/ua.png)
+
+Inside the downloader window, choose a quality preset or individual stream to start downloading with live progress and log output.
+
+![yt-dlp Media Downloader window showing format selection and progress](images/ui1.png)
+
+![yt-dlp Media Downloader window showing download status and live log output](images/ui2.png)
+
+* &lt;kbd&gt;↩&lt;/kbd&gt; Fetch formats for the entered URL.
+* &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;F&lt;/kbd&gt; Fetch formats.
+* &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;D&lt;/kbd&gt; Download selected format.
+* &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;.&lt;/kbd&gt; Cancel active download.
+* &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;O&lt;/kbd&gt; Open destination folder in Finder.
+
+Downloaded files are saved to the destination folder set in the Workflow's Configuration.</string>
+	<key>uidata</key>
+	<dict>
+		<key>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</key>
+		<dict>
+			<key>xpos</key>
+			<real>315</real>
+			<key>ypos</key>
+			<real>140</real>
+		</dict>
+		<key>316C7968-D72C-4074-A705-BC7E18AA64C1</key>
+		<dict>
+			<key>xpos</key>
+			<real>410</real>
+			<key>ypos</key>
+			<real>110</real>
+		</dict>
+		<key>49282CEF-0129-432E-BDFC-325AAB603F45</key>
+		<dict>
+			<key>xpos</key>
+			<real>120</real>
+			<key>ypos</key>
+			<real>240</real>
+		</dict>
+		<key>53F46860-6B89-4CC3-932A-5336A00BEE43</key>
+		<dict>
+			<key>xpos</key>
+			<real>120</real>
+			<key>ypos</key>
+			<real>110</real>
+		</dict>
+		<key>B8F9DB98-1388-4E8D-85A0-99347B25DDF8</key>
+		<dict>
+			<key>xpos</key>
+			<real>125</real>
+			<key>ypos</key>
+			<real>375</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>~/Downloads</string>
+				<key>placeholder</key>
+				<string>~/Downloads</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<false/>
+			</dict>
+			<key>description</key>
+			<string>Choose a destination folder for your media downloads.</string>
+			<key>label</key>
+			<string>Output Destination</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>download_dir</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://domrt.com</string>
+</dict>
+</plist>

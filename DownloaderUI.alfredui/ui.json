@@ -1,0 +1,326 @@
+{
+  "bundleid": "com.coppereye.github.ytdlp",
+  "iconpath": "../icon.png",
+  "log": {
+    "level": "all",
+    "internal": true
+  },
+  "variablesconfig": {
+    "initial_url": {
+      "src": "variable",
+      "default": "",
+      "scriptenv": true
+    },
+    "download_dir": {
+      "src": "variable",
+      "default": "~/Downloads",
+      "scriptenv": true
+    }
+  },
+  "pulse": {
+    "src": "scripts/ytdlp_ui.py",
+    "args": [
+      "poll",
+      "{var:download_dir}"
+    ],
+    "interval": 1.0,
+    "intervalmode": "delay"
+  },
+  "window": {
+    "title": "yt-dlp Media Downloader",
+    "padding": 16,
+    "size": {
+      "width": 700,
+      "height": 480
+    },
+    "minsize": {
+      "width": 560,
+      "height": 400
+    },
+    "root": {
+      "type": "view",
+      "id": "root_view",
+      "layout": "inline",
+      "direction": "vertical",
+      "spacing": 12,
+      "events": [
+        {
+          "triggers": "quit",
+          "action": {
+            "type": "script",
+            "src": "scripts/ytdlp_ui.py",
+            "args": [
+              "cleanup"
+            ]
+          }
+        }
+      ],
+      "components": [
+        {
+          "type": "view",
+          "id": "header_group",
+          "layout": "inline",
+          "direction": "vertical",
+          "spacing": 4,
+          "components": [
+            {
+              "type": "label",
+              "id": "header_label",
+              "text": "yt-dlp Media Extractor",
+              "font": {
+                "size": "large"
+              }
+            },
+            {
+              "type": "label",
+              "id": "media_title_label",
+              "text": "Paste a URL and press Return or click Fetch Formats."
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "url_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "textfield",
+              "id": "url_field",
+              "text": "{var:initial_url}",
+              "placeholder": "https://www.youtube.com/watch?v=... or any supported media URL",
+              "focus": true,
+              "constraints": {
+                "position": "left",
+                "stretch": "horizontal"
+              },
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": [
+                    {
+                      "type": "json",
+                      "src": {
+                        "update": {
+                          "ids": {
+                            "status_label": {
+                              "text": "Fetching formats..."
+                            },
+                            "download_progress": {
+                              "progress": 0.0
+                            },
+                            "percent_label": {
+                              "text": "0.0%"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "script",
+                      "src": "scripts/ytdlp_ui.py",
+                      "async": true,
+                      "args": [
+                        "fetch",
+                        "{value:url_field.text}",
+                        "{var:download_dir}"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "id": "fetch_btn",
+              "text": "Fetch Formats",
+              "shortcut": "⌘F",
+              "tooltip": "Fetch available video and audio formats (⌘F)",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": [
+                    {
+                      "type": "json",
+                      "src": {
+                        "update": {
+                          "ids": {
+                            "status_label": {
+                              "text": "Fetching formats..."
+                            },
+                            "download_progress": {
+                              "progress": 0.0
+                            },
+                            "percent_label": {
+                              "text": "0.0%"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "script",
+                      "src": "scripts/ytdlp_ui.py",
+                      "async": true,
+                      "args": [
+                        "fetch",
+                        "{value:url_field.text}",
+                        "{var:download_dir}"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "picker",
+          "id": "format_picker",
+          "constraints": {
+            "position": "left",
+            "stretch": "horizontal"
+          },
+          "items": [
+            {
+              "text": "★ Best Video + Audio (MP4)",
+              "value": "preset:best_mp4"
+            },
+            {
+              "text": "★ Best Audio Only (M4A)",
+              "value": "preset:audio_m4a"
+            },
+            {
+              "text": "★ Best Audio Only (MP3)",
+              "value": "preset:audio_mp3"
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "progress_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 10,
+          "components": [
+            {
+              "type": "progress",
+              "id": "download_progress",
+              "style": "linear",
+              "progress": 0.0,
+              "constraints": {
+                "position": "left",
+                "stretch": "horizontal"
+              }
+            },
+            {
+              "type": "label",
+              "id": "percent_label",
+              "text": "0.0%"
+            }
+          ]
+        },
+        {
+          "type": "label",
+          "id": "status_label",
+          "text": "Idle • Ready"
+        },
+        {
+          "type": "textarea",
+          "id": "log_area",
+          "text": "Waiting for activity...",
+          "editable": false,
+          "selectable": true,
+          "bordertype": "solid",
+          "font": {
+            "name": "Menlo",
+            "size": 11
+          },
+          "behaviour": {
+            "mode": "replace",
+            "scroll": "end"
+          },
+          "constraints": {
+            "position": "left",
+            "stretch": "horizontal",
+            "size": {
+              "width": 660,
+              "height": 165
+            }
+          }
+        },
+        {
+          "type": "view",
+          "id": "actions_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "button",
+              "id": "download_btn",
+              "text": "Download Selected",
+              "shortcut": "⌘D",
+              "tooltip": "Download selected format (⌘D)",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "script",
+                    "src": "scripts/ytdlp_ui.py",
+                    "args": [
+                      "download",
+                      "{value:url_field.text}",
+                      "{value:format_picker.selected.value}",
+                      "{var:download_dir}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "id": "cancel_btn",
+              "text": "Cancel",
+              "shortcut": "⌘.",
+              "tooltip": "Cancel active download (⌘.)",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "script",
+                    "src": "scripts/ytdlp_ui.py",
+                    "args": [
+                      "cancel"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "id": "open_folder_btn",
+              "text": "Open Folder",
+              "shortcut": "⌘O",
+              "tooltip": "Open output folder in Finder (⌘O)",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "script",
+                    "src": "scripts/ytdlp_ui.py",
+                    "args": [
+                      "open_folder",
+                      "{var:download_dir}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
