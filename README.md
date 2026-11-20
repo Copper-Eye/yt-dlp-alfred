@@ -35,5 +35,6 @@ Inside the downloader window, choose a quality preset or individual stream to st
 * <kbd>⌘</kbd><kbd>D</kbd> Download selected format.
 * <kbd>⌘</kbd><kbd>.</kbd> Cancel active download.
 * <kbd>⌘</kbd><kbd>O</kbd> Open destination folder in Finder.
+* <kbd>⌘</kbd><kbd>L</kbd> Show or hide logs.
 
 Downloaded files are saved to the destination folder set in the Workflow's Configuration.
