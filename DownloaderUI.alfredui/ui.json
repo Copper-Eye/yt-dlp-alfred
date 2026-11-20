@@ -18,8 +18,9 @@
     }
   },
   "pulse": {
-    "src": "scripts/ytdlp_ui.py",
+    "src": "/usr/bin/python3",
     "args": [
+      "scripts/ytdlp_ui.py",
       "poll",
       "{var:download_dir}"
     ],
@@ -34,8 +35,8 @@
       "height": 480
     },
     "minsize": {
-      "width": 560,
-      "height": 400
+      "width": 580,
+      "height": 260
     },
     "root": {
       "type": "view",
@@ -48,8 +49,9 @@
           "triggers": "quit",
           "action": {
             "type": "script",
-            "src": "scripts/ytdlp_ui.py",
+            "src": "/usr/bin/python3",
             "args": [
+              "scripts/ytdlp_ui.py",
               "cleanup"
             ]
           }
@@ -66,15 +68,25 @@
             {
               "type": "label",
               "id": "header_label",
-              "text": "yt-dlp Media Extractor",
+              "text": "yt-dlp Media Downloader",
+              "textalign": "centre",
               "font": {
                 "size": "large"
+              },
+              "constraints": {
+                "position": "left",
+                "stretch": "horizontal"
               }
             },
             {
               "type": "label",
               "id": "media_title_label",
-              "text": "Paste a URL and press Return or click Fetch Formats."
+              "text": "Paste a URL and press Return or click Fetch Formats.",
+              "textalign": "centre",
+              "constraints": {
+                "position": "left",
+                "stretch": "horizontal"
+              }
             }
           ]
         },
@@ -90,6 +102,7 @@
               "id": "url_field",
               "text": "{var:initial_url}",
               "placeholder": "https://www.youtube.com/watch?v=... or any supported media URL",
+              "textalign": "centre",
               "focus": true,
               "constraints": {
                 "position": "left",
@@ -119,9 +132,10 @@
                     },
                     {
                       "type": "script",
-                      "src": "scripts/ytdlp_ui.py",
+                      "src": "/usr/bin/python3",
                       "async": true,
                       "args": [
+                        "scripts/ytdlp_ui.py",
                         "fetch",
                         "{value:url_field.text}",
                         "{var:download_dir}"
@@ -161,9 +175,10 @@
                     },
                     {
                       "type": "script",
-                      "src": "scripts/ytdlp_ui.py",
+                      "src": "/usr/bin/python3",
                       "async": true,
                       "args": [
+                        "scripts/ytdlp_ui.py",
                         "fetch",
                         "{value:url_field.text}",
                         "{var:download_dir}"
@@ -217,7 +232,14 @@
             {
               "type": "label",
               "id": "percent_label",
-              "text": "0.0%"
+              "text": "0.0%",
+              "textalign": "centre",
+              "constraints": {
+                "size": {
+                  "width": 58,
+                  "height": 20
+                }
+              }
             }
           ]
         },
@@ -227,28 +249,41 @@
           "text": "Idle • Ready"
         },
         {
-          "type": "textarea",
-          "id": "log_area",
-          "text": "Waiting for activity...",
-          "editable": false,
-          "selectable": true,
-          "bordertype": "solid",
-          "font": {
-            "name": "Menlo",
-            "size": 11
-          },
-          "behaviour": {
-            "mode": "replace",
-            "scroll": "end"
-          },
+          "type": "view",
+          "id": "log_container",
+          "layout": "inline",
+          "direction": "vertical",
+          "spacing": 0,
           "constraints": {
             "position": "left",
-            "stretch": "horizontal",
-            "size": {
-              "width": 660,
-              "height": 165
+            "stretch": "horizontal"
+          },
+          "components": [
+            {
+              "type": "textarea",
+              "id": "log_area",
+              "text": "Waiting for activity...",
+              "editable": false,
+              "selectable": true,
+              "bordertype": "solid",
+              "font": {
+                "name": "Menlo",
+                "size": 11
+              },
+              "behaviour": {
+                "mode": "replace",
+                "scroll": "end"
+              },
+              "constraints": {
+                "position": "left",
+                "stretch": "horizontal",
+                "size": {
+                  "width": 660,
+                  "height": 150
+                }
+              }
             }
-          }
+          ]
         },
         {
           "type": "view",
@@ -268,8 +303,9 @@
                   "triggers": "actioned",
                   "action": {
                     "type": "script",
-                    "src": "scripts/ytdlp_ui.py",
+                    "src": "/usr/bin/python3",
                     "args": [
+                      "scripts/ytdlp_ui.py",
                       "download",
                       "{value:url_field.text}",
                       "{value:format_picker.selected.value}",
@@ -290,9 +326,30 @@
                   "triggers": "actioned",
                   "action": {
                     "type": "script",
-                    "src": "scripts/ytdlp_ui.py",
+                    "src": "/usr/bin/python3",
                     "args": [
+                      "scripts/ytdlp_ui.py",
                       "cancel"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "id": "toggle_log_btn",
+              "text": "Hide Log",
+              "shortcut": "⌘L",
+              "tooltip": "Show or hide console log (⌘L)",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "script",
+                    "src": "/usr/bin/python3",
+                    "args": [
+                      "scripts/ytdlp_ui.py",
+                      "toggle_log"
                     ]
                   }
                 }
@@ -309,8 +366,9 @@
                   "triggers": "actioned",
                   "action": {
                     "type": "script",
-                    "src": "scripts/ytdlp_ui.py",
+                    "src": "/usr/bin/python3",
                     "args": [
+                      "scripts/ytdlp_ui.py",
                       "open_folder",
                       "{var:download_dir}"
                     ]

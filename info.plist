@@ -286,11 +286,9 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 			<string>download_dir</string>
 		</dict>
 	</array>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>1.0.1</string>
 	<key>webaddress</key>
-	<string>https://domrt.com</string>
+	<string>https://github.com/Copper-Eye/yt-dlp-alfred/</string>
 </dict>
 </plist>
