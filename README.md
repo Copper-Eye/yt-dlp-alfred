@@ -14,7 +14,7 @@ brew install ffmpeg
 
 ## Usage
 
-Inspect available video and audio streams and download media via the `ytp` keyword.
+Inspect available video and audio streams and download media via the `yt-dlp` keyword.
 
 ![Searching for a media URL with the ytp keyword](images/keyword.png)
 
@@ -38,3 +38,7 @@ Inside the downloader window, choose a quality preset or individual stream to st
 * <kbd>⌘</kbd><kbd>L</kbd> Show or hide logs.
 
 Downloaded files are saved to the destination folder set in the Workflow's Configuration.
+
+## Display mode
+
+The downloader opens inside Alfred by default. In **Configure Workflow**, enable **Open in a separate window** to use an external window instead. The setting applies the next time the downloader opens.

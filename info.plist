@@ -12,13 +12,13 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
+				<string>3B3FE349-31FB-4FEE-958B-A682D3F36950</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 		<key>316C7968-D72C-4074-A705-BC7E18AA64C1</key>
@@ -33,7 +33,7 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 		<key>53F46860-6B89-4CC3-932A-5336A00BEE43</key>
@@ -46,7 +46,7 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 		<key>B8F9DB98-1388-4E8D-85A0-99347B25DDF8</key>
@@ -59,7 +59,20 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<false/>
+				<true/>
+			</dict>
+		</array>
+		<key>3B3FE349-31FB-4FEE-958B-A682D3F36950</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
 			</dict>
 		</array>
 	</dict>
@@ -98,7 +111,7 @@
 			<key>config</key>
 			<dict>
 				<key>launchmode</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>path</key>
 				<string>DownloaderUI.alfredui</string>
 				<key>stackview</key>
@@ -183,6 +196,26 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>json</key>
+				<string>{
+  "alfredworkflow": {
+    "arg": "{query}",
+    "config": {
+      "launchmode": "{var:launch_external}"
+    }
+  }
+}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.json</string>
+			<key>uid</key>
+			<string>3B3FE349-31FB-4FEE-958B-A682D3F36950</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>## Prerequisites
@@ -201,7 +234,7 @@ brew install ffmpeg
 
 ## Usage
 
-Inspect available video and audio streams and download media via the `ytp` keyword.
+Inspect available video and audio streams and download media via the `yt-dlp` keyword.
 
 ![Searching for a media URL with the ytp keyword](images/keyword.png)
 
@@ -223,7 +256,11 @@ Inside the downloader window, choose a quality preset or individual stream to st
 * &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;.&lt;/kbd&gt; Cancel active download.
 * &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;O&lt;/kbd&gt; Open destination folder in Finder.
 
-Downloaded files are saved to the destination folder set in the Workflow's Configuration.</string>
+Downloaded files are saved to the destination folder set in the Workflow's Configuration.
+
+## Display mode
+
+The downloader opens inside Alfred by default. In Configure Workflow, enable “Open in a separate window” to use an external window instead. The setting applies the next time the downloader opens.</string>
 	<key>uidata</key>
 	<dict>
 		<key>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</key>
@@ -236,7 +273,7 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 		<key>316C7968-D72C-4074-A705-BC7E18AA64C1</key>
 		<dict>
 			<key>xpos</key>
-			<real>410</real>
+			<real>550</real>
 			<key>ypos</key>
 			<real>110</real>
 		</dict>
@@ -261,6 +298,13 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 			<key>ypos</key>
 			<real>375</real>
 		</dict>
+		<key>3B3FE349-31FB-4FEE-958B-A682D3F36950</key>
+		<dict>
+			<key>xpos</key>
+			<real>420</real>
+			<key>ypos</key>
+			<real>140</real>
+		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
 	<array>
@@ -284,6 +328,25 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 			<string>textfield</string>
 			<key>variable</key>
 			<string>download_dir</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Open in a separate window</string>
+			</dict>
+			<key>description</key>
+			<string>Off: show the downloader inside Alfred. On: use a separate downloader window.</string>
+			<key>label</key>
+			<string>Display mode</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>launch_external</string>
 		</dict>
 	</array>
 	<key>version</key>
