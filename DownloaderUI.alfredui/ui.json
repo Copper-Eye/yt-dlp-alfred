@@ -33,7 +33,8 @@
     },
     "url_source_label": {
       "src": "variable",
-      "default": "Source: —"
+      "default": "Source: —",
+      "scriptenv": true
     }
   },
   "pulse": {

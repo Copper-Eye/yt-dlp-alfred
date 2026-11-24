@@ -92,13 +92,21 @@ def cleanup_temp_files() -> None:
         unlink_quietly(path)
 
 
+def source_log_text(text: str) -> str:
+    source = os.environ.get("url_source_label", "").partition(": ")[2]
+    if source not in {"Browser tab", "Clipboard", "Clipboard history", "Entered URL"}:
+        return text
+    heading = f"URL source: {source}"
+    return text if text.startswith(heading) else heading + "\n" + text
+
+
 def read_log_tail(max_lines: int = 30) -> str:
     if not LOG_PATH.exists():
-        return "No active log."
+        return source_log_text("No active log.")
     lines = LOG_PATH.read_text(encoding="utf-8", errors="replace").splitlines()
     if not lines:
-        return "Log file is empty."
-    return "\n".join(lines[-max_lines:])
+        return source_log_text("Log file is empty.")
+    return source_log_text("\n".join(lines[-max_lines:]))
 
 
 def extract_saved_filename(log_text: str) -> str:
@@ -213,7 +221,7 @@ def log_textarea_spec(text: str = "Waiting for activity...") -> Dict[str, Any]:
 
 def set_log_update(updates: Dict[str, Any], text: str) -> None:
     if not LOG_HIDDEN_PATH.exists():
-        updates["log_area"] = {"text": text}
+        updates["log_area"] = {"text": source_log_text(text)}
 
 
 def get_initial_url(extra_args: Optional[List[str]] = None) -> str:
@@ -585,7 +593,7 @@ def start_download(url: str, selection: str, custom_dir: str = "") -> Dict[str, 
     cmd.append(url)
 
     with open(LOG_PATH, "w", encoding="utf-8") as log_file:
-        log_file.write(f"Command: {' '.join(cmd)}\n\n")
+        log_file.write(source_log_text(f"Command: {' '.join(cmd)}\n\n"))
         log_file.flush()
         proc = subprocess.Popen(
             cmd,
@@ -665,7 +673,7 @@ def toggle_log() -> Dict[str, Any]:
         }
 
     unlink_quietly(LOG_HIDDEN_PATH)
-    restored_text = read_log_tail(30) if LOG_PATH.exists() else "Waiting for activity..."
+    restored_text = read_log_tail(30)
     return {
         "insert": {
             "ids": {

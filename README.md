@@ -61,4 +61,4 @@ clipboard itself is not changed, and the workflow does not read Alfred's databas
 
 A small caption below the URL identifies its source: Browser tab, Clipboard,
 Clipboard history, or Entered URL. Editing the field changes the caption to
-Entered URL.
+Entered URL. The log also shows a `URL source:` line.
