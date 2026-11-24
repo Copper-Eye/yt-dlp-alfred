@@ -15,6 +15,77 @@
       "src": "variable",
       "default": "~/Downloads",
       "scriptenv": true
+    },
+    "cookie_browser": {
+      "default": "none",
+      "persist": true,
+      "scriptenv": true
+    },
+    "cookie_profile": {
+      "default": "",
+      "persist": true,
+      "scriptenv": true
+    },
+    "options_expanded": {
+      "default": "0",
+      "scriptenv": true
+    },
+    "option_rate": {
+      "default": "",
+      "scriptenv": true
+    },
+    "option_retries": {
+      "default": "",
+      "scriptenv": true
+    },
+    "option_subtitles": {
+      "default": "false",
+      "scriptenv": true
+    },
+    "option_languages": {
+      "default": "en.*",
+      "scriptenv": true
+    },
+    "option_auto_subtitles": {
+      "default": "false",
+      "scriptenv": true
+    },
+    "option_embed_subtitles": {
+      "default": "false",
+      "scriptenv": true
+    },
+    "option_metadata": {
+      "default": "false",
+      "scriptenv": true
+    },
+    "option_thumbnail": {
+      "default": "false",
+      "scriptenv": true
+    },
+    "destination_override": {
+      "default": "",
+      "scriptenv": true,
+      "persist": true
+    },
+    "configured_download_dir": {
+      "default": "~/Downloads",
+      "scriptenv": true,
+      "persist": false
+    },
+    "option_skip": {
+      "default": "false",
+      "scriptenv": true,
+      "persist": true
+    },
+    "option_start": {
+      "default": "",
+      "scriptenv": true,
+      "persist": false
+    },
+    "option_end": {
+      "default": "",
+      "scriptenv": true,
+      "persist": false
     }
   },
   "pulse": {
@@ -32,7 +103,7 @@
     "padding": 16,
     "size": {
       "width": 700,
-      "height": 480
+      "height": 520
     },
     "minsize": {
       "width": 580,
@@ -53,6 +124,18 @@
             "args": [
               "scripts/ytdlp_ui.py",
               "cleanup"
+            ]
+          }
+        },
+        {
+          "triggers": "launched",
+          "action": {
+            "type": "script",
+            "src": "/usr/bin/python3",
+            "args": [
+              "scripts/ytdlp_ui.py",
+              "initialize_destination",
+              "{var:download_dir}"
             ]
           }
         }
@@ -138,7 +221,9 @@
                         "scripts/ytdlp_ui.py",
                         "fetch",
                         "{value:url_field.text}",
-                        "{var:download_dir}"
+                        "{var:download_dir}",
+                        "{var:cookie_browser}",
+                        "{var:cookie_profile}"
                       ]
                     }
                   ]
@@ -181,7 +266,9 @@
                         "scripts/ytdlp_ui.py",
                         "fetch",
                         "{value:url_field.text}",
-                        "{var:download_dir}"
+                        "{var:download_dir}",
+                        "{var:cookie_browser}",
+                        "{var:cookie_profile}"
                       ]
                     }
                   ]
@@ -203,6 +290,22 @@
               "value": "preset:best_mp4"
             },
             {
+              "text": "★ Video + Audio up to 2160p (MP4)",
+              "value": "preset:mp4_2160"
+            },
+            {
+              "text": "★ Video + Audio up to 1080p (MP4)",
+              "value": "preset:mp4_1080"
+            },
+            {
+              "text": "★ Video + Audio up to 720p (MP4)",
+              "value": "preset:mp4_720"
+            },
+            {
+              "text": "★ Video + Audio up to 480p (MP4)",
+              "value": "preset:mp4_480"
+            },
+            {
               "text": "★ Best Audio Only (M4A)",
               "value": "preset:audio_m4a"
             },
@@ -211,6 +314,33 @@
               "value": "preset:audio_mp3"
             }
           ]
+        },
+        {
+          "type": "button",
+          "id": "toggle_options_btn",
+          "text": "▸ Options",
+          "tooltip": "Show or hide download options",
+          "events": [
+            {
+              "triggers": "actioned",
+              "action": {
+                "type": "script",
+                "src": "/usr/bin/python3",
+                "args": [
+                  "scripts/ytdlp_ui.py",
+                  "toggle_options"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "options_container",
+          "layout": "inline",
+          "direction": "vertical",
+          "spacing": 0,
+          "components": []
         },
         {
           "type": "view",
@@ -309,7 +439,20 @@
                       "download",
                       "{value:url_field.text}",
                       "{value:format_picker.selected.value}",
-                      "{var:download_dir}"
+                      "{var:download_dir}",
+                      "{var:option_subtitles}",
+                      "{var:option_languages}",
+                      "{var:option_auto_subtitles}",
+                      "{var:option_embed_subtitles}",
+                      "{var:option_metadata}",
+                      "{var:option_thumbnail}",
+                      "{var:cookie_browser}",
+                      "{var:cookie_profile}",
+                      "{var:option_rate}",
+                      "{var:option_retries}",
+                      "{var:option_skip}",
+                      "{var:option_start}",
+                      "{var:option_end}"
                     ]
                   }
                 }
@@ -372,6 +515,450 @@
                       "open_folder",
                       "{var:download_dir}"
                     ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "templates": {
+    "options_panel": {
+      "type": "view",
+      "id": "options_panel",
+      "layout": "inline",
+      "direction": "vertical",
+      "spacing": 12,
+      "components": [
+        {
+          "type": "view",
+          "id": "destination_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "label",
+              "text": "Save to:"
+            },
+            {
+              "type": "textfield",
+              "id": "destination_field",
+              "editable": false,
+              "selectable": true,
+              "text": "",
+              "tooltip": "Download destination. Choose a folder or use the Workflow Configuration default.",
+              "constraints": {
+                "stretch": "horizontal"
+              }
+            },
+            {
+              "type": "button",
+              "id": "choose_destination_btn",
+              "text": "Choose…",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "opendialog": {
+                        "canchoosefiles": false,
+                        "canchoosefolders": true,
+                        "multiselect": false,
+                        "folder": "{var:download_dir}",
+                        "prompt": "Choose",
+                        "message": "Choose the download folder",
+                        "setvariable": "picked_destination",
+                        "action": {
+                          "type": "script",
+                          "src": "/usr/bin/python3",
+                          "args": [
+                            "scripts/ytdlp_ui.py",
+                            "set_destination",
+                            "{var:picked_destination}"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "id": "reset_destination_btn",
+              "text": "Default",
+              "events": [
+                {
+                  "triggers": "actioned",
+                  "action": {
+                    "type": "script",
+                    "src": "/usr/bin/python3",
+                    "args": [
+                      "scripts/ytdlp_ui.py",
+                      "set_destination",
+                      "__default__"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "cookies_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "picker",
+              "id": "cookie_browser_picker",
+              "selected": "{var:cookie_browser}",
+              "items": [
+                {
+                  "text": "Cookies: None",
+                  "value": "none"
+                }
+              ],
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "script",
+                    "src": "/usr/bin/python3",
+                    "args": [
+                      "scripts/ytdlp_ui.py",
+                      "cookie_profiles",
+                      "{value:cookie_browser_picker.selected.value}"
+                    ]
+                  }
+                }
+              ],
+              "constraints": {
+                "size": {
+                  "width": 220
+                }
+              }
+            },
+            {
+              "type": "picker",
+              "id": "cookie_profile_field",
+              "constraints": {
+                "size": {
+                  "width": 220
+                }
+              },
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "cookie_profile": "{value:cookie_profile_field.selected.value}"
+                      }
+                    }
+                  }
+                }
+              ],
+              "selected": "{var:cookie_profile}",
+              "items": [
+                {
+                  "text": "Profile: Automatic",
+                  "value": ""
+                }
+              ],
+              "tooltip": "Profiles detected for the selected browser. Automatic lets yt-dlp choose."
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "clip_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "label",
+              "text": "Start:"
+            },
+            {
+              "type": "textfield",
+              "id": "start_time_field",
+              "placeholder": "00:00",
+              "constraints": {
+                "size": {
+                  "width": 100
+                }
+              },
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_start": "{value:start_time_field.text}"
+                      }
+                    }
+                  }
+                }
+              ],
+              "tooltip": "Optional clip start: seconds, MM:SS, or HH:MM:SS. Blank starts at 0."
+            },
+            {
+              "type": "label",
+              "text": "End:"
+            },
+            {
+              "type": "textfield",
+              "id": "end_time_field",
+              "placeholder": "Full video",
+              "constraints": {
+                "size": {
+                  "width": 100
+                }
+              },
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_end": "{value:end_time_field.text}"
+                      }
+                    }
+                  }
+                }
+              ],
+              "tooltip": "Optional clip end. Blank continues to the end. Both blank downloads the full video."
+            },
+            {
+              "type": "checkbox",
+              "id": "skip_downloaded_check",
+              "text": "Skip downloaded",
+              "tooltip": "Skip full videos recorded in this folder’s history. Clips do not read or update that history.",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_skip": "{value:skip_downloaded_check.checked}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "network_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "label",
+              "text": "Speed limit:"
+            },
+            {
+              "type": "textfield",
+              "id": "rate_limit_field",
+              "placeholder": "Unlimited",
+              "constraints": {
+                "size": {
+                  "width": 100
+                }
+              },
+              "tooltip": "Maximum bytes per second, e.g. 500K or 5M. Blank: unlimited.",
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_rate": "{value:rate_limit_field.text}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "label",
+              "text": "Retries:"
+            },
+            {
+              "type": "textfield",
+              "id": "retries_field",
+              "placeholder": "10",
+              "constraints": {
+                "size": {
+                  "width": 100
+                }
+              },
+              "tooltip": "File and fragment retries (0–9999). Blank: yt-dlp default.",
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_retries": "{value:retries_field.text}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "subtitles_check",
+              "text": "Subtitles",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_subtitles": "{value:subtitles_check.checked}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "textfield",
+              "id": "subtitle_languages",
+              "text": "en.*",
+              "placeholder": "en.*,ja",
+              "constraints": {
+                "size": {
+                  "width": 100
+                }
+              },
+              "tooltip": "Subtitle languages, e.g. en.*,ja or all,-live_chat.",
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_languages": "{value:subtitle_languages.text}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "subtitle_options_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "checkbox",
+              "id": "auto_subtitles_check",
+              "text": "Include auto-generated",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_auto_subtitles": "{value:auto_subtitles_check.checked}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "embed_subtitles_check",
+              "text": "Embed in video",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_embed_subtitles": "{value:embed_subtitles_check.checked}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "id": "embedding_row",
+          "layout": "inline",
+          "direction": "horizontal",
+          "spacing": 8,
+          "components": [
+            {
+              "type": "checkbox",
+              "id": "metadata_check",
+              "text": "Embed metadata",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_metadata": "{value:metadata_check.checked}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "thumbnail_check",
+              "text": "Embed cover art",
+              "checked": false,
+              "events": [
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "option_thumbnail": "{value:thumbnail_check.checked}"
+                      }
+                    }
                   }
                 }
               ]
