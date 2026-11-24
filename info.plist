@@ -12,7 +12,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
+				<string>63B88DE4-C954-4988-92AE-777EE8A04767</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -54,6 +54,19 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>09995EDF-FA39-4B9B-B008-C1C3B4C04AE1</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>63B88DE4-C954-4988-92AE-777EE8A04767</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>316C7968-D72C-4074-A705-BC7E18AA64C1</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -122,6 +135,46 @@
 				<dict>
 					<key>initial_url</key>
 					<string>{query}</string>
+					<key>url_history_00</key>
+					<string>{clipboard:0}</string>
+					<key>url_history_01</key>
+					<string>{clipboard:1}</string>
+					<key>url_history_02</key>
+					<string>{clipboard:2}</string>
+					<key>url_history_03</key>
+					<string>{clipboard:3}</string>
+					<key>url_history_04</key>
+					<string>{clipboard:4}</string>
+					<key>url_history_05</key>
+					<string>{clipboard:5}</string>
+					<key>url_history_06</key>
+					<string>{clipboard:6}</string>
+					<key>url_history_07</key>
+					<string>{clipboard:7}</string>
+					<key>url_history_08</key>
+					<string>{clipboard:8}</string>
+					<key>url_history_09</key>
+					<string>{clipboard:9}</string>
+					<key>url_history_10</key>
+					<string>{clipboard:10}</string>
+					<key>url_history_11</key>
+					<string>{clipboard:11}</string>
+					<key>url_history_12</key>
+					<string>{clipboard:12}</string>
+					<key>url_history_13</key>
+					<string>{clipboard:13}</string>
+					<key>url_history_14</key>
+					<string>{clipboard:14}</string>
+					<key>url_history_15</key>
+					<string>{clipboard:15}</string>
+					<key>url_history_16</key>
+					<string>{clipboard:16}</string>
+					<key>url_history_17</key>
+					<string>{clipboard:17}</string>
+					<key>url_history_18</key>
+					<string>{clipboard:18}</string>
+					<key>url_history_19</key>
+					<string>{clipboard:19}</string>
 				</dict>
 			</dict>
 			<key>type</key>
@@ -183,6 +236,29 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>DownloaderUI.alfredui/scripts/url_input.py</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>63B88DE4-C954-4988-92AE-777EE8A04767</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>## Prerequisites
@@ -236,7 +312,7 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 		<key>316C7968-D72C-4074-A705-BC7E18AA64C1</key>
 		<dict>
 			<key>xpos</key>
-			<real>410</real>
+			<real>610.0</real>
 			<key>ypos</key>
 			<real>110</real>
 		</dict>
@@ -260,6 +336,13 @@ Downloaded files are saved to the destination folder set in the Workflow's Confi
 			<real>125</real>
 			<key>ypos</key>
 			<real>375</real>
+		</dict>
+		<key>63B88DE4-C954-4988-92AE-777EE8A04767</key>
+		<dict>
+			<key>xpos</key>
+			<integer>410</integer>
+			<key>ypos</key>
+			<integer>140</integer>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
