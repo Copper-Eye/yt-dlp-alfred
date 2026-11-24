@@ -84,6 +84,9 @@ def resolve_input(environment: Mapping[str, str]) -> dict:
         "suggested_url": url,
         "suggested_url_source": source,
         "url_input_resolved": "1",
+        "url_source_label": "Source: " + ("Entered URL" if explicit else {
+            "browser": "Browser tab", "clipboard": "Clipboard", "history": "Clipboard history",
+        }.get(source, "—")),
     }
     # Do not pass unrelated clipboard history on to the UI or download process.
     variables.update({f"{HISTORY_PREFIX}{i:02}": "" for i in range(HISTORY_LIMIT)})

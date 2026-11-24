@@ -58,3 +58,7 @@ be enabled for older items; the current clipboard works independently.
 History contents are resolved through Alfred placeholders at workflow launch,
 then discarded from the workflow's variables after selecting a link. The
 clipboard itself is not changed, and the workflow does not read Alfred's database.
+
+A small caption below the URL identifies its source: Browser tab, Clipboard,
+Clipboard history, or Entered URL. Editing the field changes the caption to
+Entered URL.

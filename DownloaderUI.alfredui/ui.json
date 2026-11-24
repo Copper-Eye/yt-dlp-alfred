@@ -30,6 +30,10 @@
       "src": "variable",
       "default": "0",
       "scriptenv": true
+    },
+    "url_source_label": {
+      "src": "variable",
+      "default": "Source: —"
     }
   },
   "pulse": {
@@ -47,7 +51,7 @@
     "padding": 16,
     "size": {
       "width": 700,
-      "height": 480
+      "height": 504
     },
     "minsize": {
       "width": 580,
@@ -157,6 +161,24 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "triggers": "changed",
+                  "action": {
+                    "type": "json",
+                    "src": {
+                      "variables": {
+                        "url_source_label": "Source: Entered URL"
+                      },
+                      "update": {
+                        "ids": {
+                          "url_origin_label": {
+                            "text": "Source: Entered URL"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               ]
             },
@@ -204,6 +226,20 @@
               ]
             }
           ]
+        },
+        {
+          "type": "label",
+          "id": "url_origin_label",
+          "text": "{var:url_source_label}",
+          "font": {
+            "size": "small"
+          },
+          "colour": "secondaryLabelColor",
+          "textalign": "left",
+          "constraints": {
+            "position": "left",
+            "stretch": "horizontal"
+          }
         },
         {
           "type": "picker",

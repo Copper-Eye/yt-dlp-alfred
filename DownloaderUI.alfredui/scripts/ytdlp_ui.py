@@ -22,8 +22,8 @@ FETCH_PENDING_PATH = Path(f"/tmp/ytdlp_ui_{WF_TAG}.fetch_pending")
 CLIPBOARD_CHECKED_PATH = Path(f"/tmp/ytdlp_ui_{WF_TAG}.clipboard_checked")
 LOG_HIDDEN_PATH = Path(f"/tmp/ytdlp_ui_{WF_TAG}.log_hidden")
 
-WINDOW_EXPANDED_HEIGHT = 480
-WINDOW_COMPACT_HEIGHT = 275
+WINDOW_EXPANDED_HEIGHT = 504
+WINDOW_COMPACT_HEIGHT = 299
 
 PCT_RE = re.compile(r"\[download\]\s+(\d+(?:\.\d+)?)%")
 MEDIA_DEST_RE = re.compile(
@@ -416,6 +416,7 @@ def poll_status(custom_dir: str = "", extra_args: Optional[List[str]] = None) ->
                 status = f"{source} URL ready • Press Return or ⌘F to fetch • Output: {out_dir}"
                 updates: Dict[str, Any] = {
                     "url_field": {"text": clipboard_url},
+                    "url_origin_label": {"text": f"Source: {source}"},
                     "download_progress": {"progress": progress_val},
                     "percent_label": {"text": f"{pct:.1f}%"},
                     "status_label": {"text": status},
