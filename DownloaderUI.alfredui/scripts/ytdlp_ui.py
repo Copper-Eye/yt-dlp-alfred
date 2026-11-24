@@ -228,6 +228,9 @@ def get_initial_url(extra_args: Optional[List[str]] = None) -> str:
 
 
 def get_clipboard_url() -> str:
+    if os.environ.get("url_input_resolved") == "1":
+        candidate = os.environ.get("suggested_url", "").strip()
+        return candidate if is_valid_http_url(candidate) else ""
     try:
         proc = subprocess.run(
             ["pbpaste"],
@@ -408,14 +411,16 @@ def poll_status(custom_dir: str = "", extra_args: Optional[List[str]] = None) ->
             CLIPBOARD_CHECKED_PATH.write_text("1", encoding="utf-8")
             clipboard_url = get_clipboard_url()
             if clipboard_url:
-                status = f"Clipboard URL ready • Press Return or ⌘F to fetch • Output: {out_dir}"
+                source = {"browser": "Browser tab", "clipboard": "Clipboard", "history": "Clipboard history"}.get(
+                    os.environ.get("suggested_url_source", ""), "Clipboard")
+                status = f"{source} URL ready • Press Return or ⌘F to fetch • Output: {out_dir}"
                 updates: Dict[str, Any] = {
                     "url_field": {"text": clipboard_url},
                     "download_progress": {"progress": progress_val},
                     "percent_label": {"text": f"{pct:.1f}%"},
                     "status_label": {"text": status},
                 }
-                set_log_update(updates, f"Detected URL in clipboard: {clipboard_url}")
+                set_log_update(updates, "URL selected. Press Return or Fetch Formats to continue.")
                 return ui_response(updates, pulse_interval=0.0, relayout=False)
         status = f"Idle • Output: {out_dir}"
         next_interval = 0.0

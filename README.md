@@ -38,3 +38,23 @@ Inside the downloader window, choose a quality preset or individual stream to st
 * <kbd>⌘</kbd><kbd>L</kbd> Show or hide logs.
 
 Downloaded files are saved to the destination folder set in the Workflow's Configuration.
+
+## Automatic URL selection
+
+An explicitly supplied URL takes priority. When opened without one, the workflow
+fills the URL field from the current tab of the front supported browser, then
+from the current clipboard, then from the newest link among the 20 most recent
+Alfred Clipboard History entries. Links inside copied text are accepted. The
+selected URL waits for Return or Fetch Formats; no download starts automatically.
+
+Browser detection uses Alfred's Core Automation Tasks (install/update them in
+Alfred Preferences → Workflows → Automation Task Options). Supported browsers
+follow the Current Front Browser Tab task, including Safari and Chromium-based
+browsers such as Chrome, Brave and Edge. It may request macOS Automation access.
+An unavailable browser/task, a non-web tab, or denied access falls back to the
+clipboard. Firefox is not supported by that browser task. Clipboard History must
+be enabled for older items; the current clipboard works independently.
+
+History contents are resolved through Alfred placeholders at workflow launch,
+then discarded from the workflow's variables after selecting a link. The
+clipboard itself is not changed, and the workflow does not read Alfred's database.

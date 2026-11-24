@@ -15,6 +15,21 @@
       "src": "variable",
       "default": "~/Downloads",
       "scriptenv": true
+    },
+    "suggested_url": {
+      "src": "variable",
+      "default": "",
+      "scriptenv": true
+    },
+    "suggested_url_source": {
+      "src": "variable",
+      "default": "",
+      "scriptenv": true
+    },
+    "url_input_resolved": {
+      "src": "variable",
+      "default": "0",
+      "scriptenv": true
     }
   },
   "pulse": {
